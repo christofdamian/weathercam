@@ -4,6 +4,7 @@ import ecowitt.api
 
 import os
 from dotenv import load_dotenv
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 load_dotenv()
 
@@ -19,4 +20,13 @@ ecowitt = ecowitt.api.Ecowitt(
     temp_unitid = ecowitt_temp_unitid
     )
 
-print(ecowitt.outdoor_temperature_value())
+
+jinja2  = Environment(
+    loader=FileSystemLoader("templates"),
+    autoescape=select_autoescape()
+)
+
+for filename in ["weathercam.html"]:
+    print(filename)
+    template = jinja2.get_template(filename)
+    template.stream(temperature=ecowitt.outdoor_temperature_value()).dump("output/" + filename)
