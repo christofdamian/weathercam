@@ -1,34 +1,172 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <title>Weathercam</title>
+        <title>Montserrat</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="utf-8">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <style>
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
 
+            .weather-container {
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-radius: 20px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                margin-top: 2rem;
+                overflow: hidden;
+            }
+
+            .weather-header {
+                background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+                color: white;
+                padding: 2rem;
+                text-align: center;
+                border: none;
+            }
+
+            .weather-header h1 {
+                margin: 0;
+                font-weight: 300;
+                font-size: 2.5rem;
+            }
+
+            .camera-section {
+                padding: 2rem;
+                text-align: center;
+            }
+
+            .camera-frame {
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+                display: inline-block;
+                max-width: 100%;
+            }
+
+            .camera-frame img {
+                width: 100%;
+                height: auto;
+                display: block;
+            }
+
+            .weather-stats {
+                padding: 2rem;
+                background: rgba(255,255,255,0.8);
+            }
+
+            .stat-card {
+                background: white;
+                border-radius: 15px;
+                padding: 1.5rem;
+                text-align: center;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+                border: none;
+                transition: transform 0.3s ease;
+                height: 100%;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .stat-icon {
+                font-size: 2.5rem;
+                margin-bottom: 1rem;
+                display: block;
+            }
+
+            .temperature-icon { color: #ff6b6b; }
+            .humidity-icon { color: #4ecdc4; }
+            .wind-icon { color: #45b7d1; }
+
+            .stat-value {
+                font-size: 2.5rem;
+                font-weight: 600;
+                margin: 0.5rem 0;
+                color: #2c3e50;
+            }
+
+            .stat-label {
+                color: #7f8c8d;
+                font-size: 1rem;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                margin: 0;
+            }
+
+            .timestamp {
+                text-align: center;
+                color: #7f8c8d;
+                font-size: 0.9rem;
+                padding: 1rem;
+                border-top: 1px solid rgba(0,0,0,0.1);
+            }
+
+            @media (max-width: 768px) {
+                .weather-header h1 {
+                    font-size: 2rem;
+                }
+                .stat-value {
+                    font-size: 2rem;
+                }
+                .camera-section {
+                    padding: 1rem;
+                }
+                .weather-stats {
+                    padding: 1rem;
+                }
+            }
+        </style>
     </head>
     <body>
         <div class="container">
-            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-                <h1>Weathercam</h1>
-            </header>
+            <div class="weather-container">
+                <header class="weather-header">
+                    <h1>Montserrat</h1>
+                </header>
 
-
-            <div>
-                <img src="snap.jpg">
-            </div>
-
-
-            <div class="card text-dark bg-light mb-3" style="max-width: 30rem;">
-                <div class="card-body">
-                    <h5 class="card-title">Temperature</h5>
-                    <p class="card-text text-center fs-1">{{ temperature_value }} {{ temperature_unit }} </p>
-                    <p class="card-text text-center fs-1">{{ humidity_value }} {{ humidity_unit }}</p>
-                    <p class="card-text text-center fs-1">{{ wind_speed_value }} {{ wind_speed_unit }}</p>
+                <div class="camera-section">
+                    <div class="camera-frame">
+                        <img src="snap.jpg" alt="Weather Camera View">
+                    </div>
                 </div>
-            </div>
 
+                <div class="weather-stats">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <i class="fas fa-thermometer-half stat-icon temperature-icon"></i>
+                                <div class="stat-value">{{ temperature_value }}{{ temperature_unit }}</div>
+                                <p class="stat-label">Temperature</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <i class="fas fa-tint stat-icon humidity-icon"></i>
+                                <div class="stat-value">{{ humidity_value }}{{ humidity_unit }}</div>
+                                <p class="stat-label">Humidity</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <i class="fas fa-wind stat-icon wind-icon"></i>
+                                <div class="stat-value">{{ wind_speed_value }} {{ wind_speed_unit }}</div>
+                                <p class="stat-label">Wind Speed</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     </body>
 </html>
