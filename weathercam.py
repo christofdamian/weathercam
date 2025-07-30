@@ -29,7 +29,6 @@ jinja2  = Environment(
 )
 
 for filename in ["weathercam.html"]:
-    print(filename)
     template = jinja2.get_template(filename)
     template.stream(
         temperature_value=ecowitt.outdoor_temperature_value(),

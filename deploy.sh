@@ -1,7 +1,11 @@
 #!/bin/bash
 
+echo "* getting snapshot"
 ./snap.py
+
+echo "* getting weather"
 ./weathercam.py
 
-aws s3 cp --dryrun --recursive output/. s3://webcam.calpenedes.com/
+echo "* uploading files"
+aws --profile webcam-script s3 cp --recursive output/. s3://webcam.calpenedes.com/
 
