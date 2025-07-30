@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 
 from reolink_aio.api import Host
 import asyncio
