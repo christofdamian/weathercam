@@ -9,3 +9,4 @@ echo "* getting weather"
 echo "* uploading files"
 aws s3 cp --recursive output/. s3://webcam.calpenedes.com/
 
+exit 0
