@@ -95,6 +95,9 @@
             .humidity-icon { color: #4ecdc4; }
             .wind-icon { color: #45b7d1; }
             .uvi-icon { color: #f39c12; }
+            .feels-like-icon { color: #e67e22; }
+            .pressure-icon { color: #9b59b6; }
+            .solar-icon { color: #f1c40f; }
 
             .stat-value {
                 font-size: 2.5rem;
@@ -151,32 +154,55 @@
 
                 <div class="weather-stats">
                     <div class="row g-4">
-                        <div class="col-md-3">
+                        <div class="col-lg-2 col-md-4">
                             <div class="stat-card">
                                 <i class="fas fa-thermometer-half stat-icon temperature-icon"></i>
                                 <div class="stat-value">{{ temperature_value }}{{ temperature_unit }}</div>
                                 <p class="stat-label">Temperature</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-2 col-md-4">
+                            <div class="stat-card">
+                                <i class="fas fa-thermometer-quarter stat-icon feels-like-icon"></i>
+                                <div class="stat-value">{{ feels_like_value }}{{ feels_like_unit }}</div>
+                                <p class="stat-label">Feels Like</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4">
                             <div class="stat-card">
                                 <i class="fas fa-tint stat-icon humidity-icon"></i>
                                 <div class="stat-value">{{ humidity_value }}{{ humidity_unit }}</div>
                                 <p class="stat-label">Humidity</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-2 col-md-4">
                             <div class="stat-card">
                                 <i class="fas fa-wind stat-icon wind-icon"></i>
                                 <div class="stat-value">{{ wind_speed_value }} {{ wind_speed_unit }}</div>
                                 <p class="stat-label">Wind Speed</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-lg-2 col-md-4">
+                            <div class="stat-card">
+                                <i class="fas fa-compress-alt stat-icon pressure-icon"></i>
+                                <div class="stat-value">{{ pressure_value }} {{ pressure_unit }}</div>
+                                <p class="stat-label">Pressure</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4">
                             <div class="stat-card">
                                 <i class="fas fa-sun stat-icon uvi-icon"></i>
                                 <div class="stat-value">{{ uvi_value }}</div>
                                 <p class="stat-label">UV Index</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4 mt-1">
+                        <div class="col-md-6 offset-md-3">
+                            <div class="stat-card">
+                                <i class="fas fa-solar-panel stat-icon solar-icon"></i>
+                                <div class="stat-value">{{ solar_value }} {{ solar_unit }}</div>
+                                <p class="stat-label">Solar Radiation</p>
                             </div>
                         </div>
                     </div>

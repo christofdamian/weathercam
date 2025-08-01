@@ -38,3 +38,21 @@ class Ecowitt:
 
     def uvi_unit(self):
         return self.data["solar_and_uvi"]["uvi"]["unit"]
+
+    def feels_like_temperature_value(self):
+        return self.data["outdoor"]["feels_like"]["value"]
+
+    def feels_like_temperature_unit(self):
+        return self.data["outdoor"]["feels_like"]["unit"]
+
+    def pressure_value(self):
+        return self.data["pressure"]["relative"]["value"]
+
+    def pressure_unit(self):
+        return self.data["pressure"]["relative"]["unit"]
+
+    def solar_value(self):
+        return self.data["solar_and_uvi"]["solar"]["value"]
+
+    def solar_unit(self):
+        return self.data["solar_and_uvi"]["solar"]["unit"]

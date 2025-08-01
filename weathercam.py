@@ -35,10 +35,16 @@ for filename in ["weathercam.html"]:
     template.stream(
         temperature_value=ecowitt.outdoor_temperature_value(),
         temperature_unit=ecowitt.outdoor_temperature_unit(),
+        feels_like_value=ecowitt.feels_like_temperature_value(),
+        feels_like_unit=ecowitt.feels_like_temperature_unit(),
         humidity_value=ecowitt.outdoor_humidity_value(),
         humidity_unit=ecowitt.outdoor_humidity_unit(),
         wind_speed_value=ecowitt.wind_speed_value(),
         wind_speed_unit=ecowitt.wind_speed_unit(),
+        pressure_value=ecowitt.pressure_value(),
+        pressure_unit=ecowitt.pressure_unit(),
         uvi_value=ecowitt.uvi_value(),
+        solar_value=ecowitt.solar_value(),
+        solar_unit=ecowitt.solar_unit(),
         google_analytics_id=google_analytics_id,    
     ).dump("output/" + filename)
