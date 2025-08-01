@@ -4,6 +4,7 @@ class Ecowitt:
     data = None
 
     def __init__(self, application_key=None, api_key=None, mac=None, temp_unitid=2, wind_speed_unitid=7, call_back="all"):
+	# see: https://doc.ecowitt.net/web/#/apiv3en?page_id=17
         response = requests.get(f"https://api.ecowitt.net/api/v3/device/real_time", params = {
             "application_key": application_key,
             "api_key": api_key,
@@ -31,3 +32,9 @@ class Ecowitt:
 
     def wind_speed_unit(self):
         return self.data["wind"]["wind_speed"]["unit"]
+
+    def uvi_value(self):
+        return self.data["solar_and_uvi"]["uvi"]["value"]
+
+    def uvi_unit(self):
+        return self.data["solar_and_uvi"]["uvi"]["unit"]

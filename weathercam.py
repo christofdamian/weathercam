@@ -39,5 +39,6 @@ for filename in ["weathercam.html"]:
         humidity_unit=ecowitt.outdoor_humidity_unit(),
         wind_speed_value=ecowitt.wind_speed_value(),
         wind_speed_unit=ecowitt.wind_speed_unit(),
+        uvi_value=ecowitt.uvi_value(),
         google_analytics_id=google_analytics_id,    
     ).dump("output/" + filename)
