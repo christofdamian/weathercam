@@ -17,7 +17,7 @@ ecowitt_wind_speed_unitid = int(os.environ.get("WIND_SPEED_UNITID"))
 
 google_analytics_id = os.environ.get("GOOGLE_ANALYTICS_ID")
 
-ecowitt = ecowitt.api.Ecowitt(
+ecowitt_api = ecowitt.api.Ecowitt(
     application_key=ecowitt_application_key,
     api_key=ecowitt_api_key,
     mac=ecowitt_mac,
@@ -26,9 +26,12 @@ ecowitt = ecowitt.api.Ecowitt(
     call_back="outdoor,wind,pressure,solar_and_uvi"
     )
 
+# Get real-time data
+ecowitt_realtime = ecowitt_api.get_real_time_data()
+
 # Get historical temperature data
 try:
-    history_data = ecowitt.get_device_history()
+    history_data = ecowitt_api.get_device_history()
     temperature_history = []
     if (history_data and
         isinstance(history_data, dict) and
@@ -61,19 +64,19 @@ jinja2  = Environment(
 for filename in ["weathercam.html"]:
     template = jinja2.get_template(filename)
     template.stream(
-        temperature_value=ecowitt.outdoor_temperature_value(),
-        temperature_unit=ecowitt.outdoor_temperature_unit(),
-        feels_like_value=ecowitt.feels_like_temperature_value(),
-        feels_like_unit=ecowitt.feels_like_temperature_unit(),
-        humidity_value=ecowitt.outdoor_humidity_value(),
-        humidity_unit=ecowitt.outdoor_humidity_unit(),
-        wind_speed_value=ecowitt.wind_speed_value(),
-        wind_speed_unit=ecowitt.wind_speed_unit(),
-        pressure_value=ecowitt.pressure_value(),
-        pressure_unit=ecowitt.pressure_unit(),
-        uvi_value=ecowitt.uvi_value(),
-        solar_value=ecowitt.solar_value(),
-        solar_unit=ecowitt.solar_unit(),
+        temperature_value=ecowitt_realtime.outdoor_temperature_value(),
+        temperature_unit=ecowitt_realtime.outdoor_temperature_unit(),
+        feels_like_value=ecowitt_realtime.feels_like_temperature_value(),
+        feels_like_unit=ecowitt_realtime.feels_like_temperature_unit(),
+        humidity_value=ecowitt_realtime.outdoor_humidity_value(),
+        humidity_unit=ecowitt_realtime.outdoor_humidity_unit(),
+        wind_speed_value=ecowitt_realtime.wind_speed_value(),
+        wind_speed_unit=ecowitt_realtime.wind_speed_unit(),
+        pressure_value=ecowitt_realtime.pressure_value(),
+        pressure_unit=ecowitt_realtime.pressure_unit(),
+        uvi_value=ecowitt_realtime.uvi_value(),
+        solar_value=ecowitt_realtime.solar_value(),
+        solar_unit=ecowitt_realtime.solar_unit(),
         google_analytics_id=google_analytics_id,
         temperature_history_json=json.dumps(temperature_history),
     ).dump("output/" + filename)

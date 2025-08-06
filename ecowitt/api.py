@@ -1,28 +1,11 @@
 import requests
 from datetime import datetime, timedelta
 
-class Ecowitt:
-    data = None
-    history_data = None
-
-    def __init__(self, application_key=None, api_key=None, mac=None, temp_unitid=2, wind_speed_unitid=7, call_back="all"):
-	# see: https://doc.ecowitt.net/web/#/apiv3en?page_id=17
-        self.application_key = application_key
-        self.api_key = api_key
-        self.mac = mac
-        self.temp_unitid = temp_unitid
-        self.wind_speed_unitid = wind_speed_unitid
-        self.call_back = call_back
-
-        response = requests.get(f"https://api.ecowitt.net/api/v3/device/real_time", params = {
-            "application_key": application_key,
-            "api_key": api_key,
-            "mac": mac,
-            "temp_unitid": temp_unitid,
-            "wind_speed_unitid": wind_speed_unitid,
-            "call_back": call_back,
-        })
-        self.data = response.json()["data"]
+class EcowittRealTimeData:
+    """Wrapper class for real-time weather data from Ecowitt API"""
+    
+    def __init__(self, data):
+        self.data = data
 
     def outdoor_temperature_value(self):
         return self.data["outdoor"]["temperature"]["value"]
@@ -65,6 +48,40 @@ class Ecowitt:
 
     def solar_unit(self):
         return self.data["solar_and_uvi"]["solar"]["unit"]
+
+class Ecowitt:
+    history_data = None
+
+    def __init__(self, application_key=None, api_key=None, mac=None, temp_unitid=2, wind_speed_unitid=7, call_back="all"):
+        self.application_key = application_key
+        self.api_key = api_key
+        self.mac = mac
+        self.temp_unitid = temp_unitid
+        self.wind_speed_unitid = wind_speed_unitid
+        self.call_back = call_back
+
+    def get_real_time_data(self):
+        """
+        Get real-time weather data from Ecowitt API
+        
+        Returns:
+            EcowittRealTimeData: Wrapper object for real-time weather data
+        """
+        # see: https://doc.ecowitt.net/web/#/apiv3en?page_id=17
+        response = requests.get(f"https://api.ecowitt.net/api/v3/device/real_time", params = {
+            "application_key": self.application_key,
+            "api_key": self.api_key,
+            "mac": self.mac,
+            "temp_unitid": self.temp_unitid,
+            "wind_speed_unitid": self.wind_speed_unitid,
+            "call_back": self.call_back,
+        })
+        
+        if response.status_code == 200:
+            data = response.json()["data"]
+            return EcowittRealTimeData(data)
+        else:
+            raise Exception(f"API request failed with status {response.status_code}: {response.text}")
 
     def get_device_history(self, start_date=None, end_date=None, cycle_type="30min"):
         """
