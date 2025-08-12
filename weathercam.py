@@ -29,32 +29,50 @@ ecowitt_api = ecowitt.api.Ecowitt(
 # Get real-time data
 ecowitt_realtime = ecowitt_api.get_real_time_data()
 
-# Get historical temperature data
+# Get historical temperature and humidity data
 try:
     history_data = ecowitt_api.get_device_history()
     temperature_history = []
+    humidity_history = []
+    
     if (history_data and
         isinstance(history_data, dict) and
-        'outdoor' in history_data and
-        'temperature' in history_data['outdoor'] and
-        'list' in history_data['outdoor']['temperature']):
+        'outdoor' in history_data):
 
-        temp_list = history_data['outdoor']['temperature']['list']
-        for timestamp, temp_value in temp_list.items():
-            # Convert Unix timestamp to ISO format for JavaScript
-            from datetime import datetime
-            dt = datetime.fromtimestamp(int(timestamp))
-            temperature_history.append({
-                'time': dt.isoformat(),
-                'temperature': float(temp_value)
-            })
+        # Process temperature data
+        if ('temperature' in history_data['outdoor'] and
+            'list' in history_data['outdoor']['temperature']):
+            temp_list = history_data['outdoor']['temperature']['list']
+            for timestamp, temp_value in temp_list.items():
+                # Convert Unix timestamp to ISO format for JavaScript
+                from datetime import datetime
+                dt = datetime.fromtimestamp(int(timestamp))
+                temperature_history.append({
+                    'time': dt.isoformat(),
+                    'temperature': float(temp_value)
+                })
+
+        # Process humidity data
+        if ('humidity' in history_data['outdoor'] and
+            'list' in history_data['outdoor']['humidity']):
+            humidity_list = history_data['outdoor']['humidity']['list']
+            for timestamp, humidity_value in humidity_list.items():
+                # Convert Unix timestamp to ISO format for JavaScript
+                from datetime import datetime
+                dt = datetime.fromtimestamp(int(timestamp))
+                humidity_history.append({
+                    'time': dt.isoformat(),
+                    'humidity': float(humidity_value)
+                })
 
         # Sort by timestamp
         temperature_history.sort(key=lambda x: x['time'])
+        humidity_history.sort(key=lambda x: x['time'])
 
 except Exception as e:
     print(f"Error getting history data: {e}")
     temperature_history = []
+    humidity_history = []
 
 jinja2  = Environment(
     loader=FileSystemLoader("templates"),
@@ -79,4 +97,5 @@ for filename in ["weathercam.html"]:
         solar_unit=ecowitt_realtime.solar_unit(),
         google_analytics_id=google_analytics_id,
         temperature_history_json=json.dumps(temperature_history),
+        humidity_history_json=json.dumps(humidity_history),
     ).dump("output/" + filename)
