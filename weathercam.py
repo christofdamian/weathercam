@@ -16,6 +16,7 @@ ecowitt_temp_unitid = int(os.environ.get("TEMP_UNITID"))
 ecowitt_wind_speed_unitid = int(os.environ.get("WIND_SPEED_UNITID"))
 
 google_analytics_id = os.environ.get("GOOGLE_ANALYTICS_ID")
+posthog_id = os.environ.get("POSTHOG_ID")
 
 ecowitt_api = ecowitt.api.Ecowitt(
     application_key=ecowitt_application_key,
@@ -34,7 +35,7 @@ try:
     history_data = ecowitt_api.get_device_history()
     temperature_history = []
     humidity_history = []
-    
+
     if (history_data and
         isinstance(history_data, dict) and
         'outdoor' in history_data):
@@ -96,6 +97,7 @@ for filename in ["weathercam.html"]:
         solar_value=ecowitt_realtime.solar_value(),
         solar_unit=ecowitt_realtime.solar_unit(),
         google_analytics_id=google_analytics_id,
+        posthog_id=posthog_id,
         temperature_history_json=json.dumps(temperature_history),
         humidity_history_json=json.dumps(humidity_history),
     ).dump("output/" + filename)
