@@ -9,11 +9,11 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 load_dotenv()
 
-ecowitt_application_key = os.environ.get("APPLICATION_KEY")
-ecowitt_api_key = os.environ.get("API_KEY")
-ecowitt_mac = os.environ.get("MAC")
-ecowitt_temp_unitid = int(os.environ.get("TEMP_UNITID"))
-ecowitt_wind_speed_unitid = int(os.environ.get("WIND_SPEED_UNITID"))
+ecowitt_application_key = os.environ.get("ECOWITT_APPLICATION_KEY")
+ecowitt_api_key = os.environ.get("ECOWITT_API_KEY")
+ecowitt_mac = os.environ.get("ECOWITT_MAC")
+ecowitt_temp_unitid = int(os.environ.get("ECOWITT_TEMP_UNITID"))
+ecowitt_wind_speed_unitid = int(os.environ.get("ECOWITT_WIND_SPEED_UNITID"))
 
 google_analytics_id = os.environ.get("GOOGLE_ANALYTICS_ID")
 posthog_id = os.environ.get("POSTHOG_ID")
