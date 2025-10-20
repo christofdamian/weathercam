@@ -49,6 +49,26 @@ class EcowittRealTimeData:
     def solar_unit(self):
         return self.data["solar_and_uvi"]["solar"]["unit"]
 
+    def daily_rain_value(self):
+        if "rainfall" in self.data and "daily" in self.data["rainfall"]:
+            return self.data["rainfall"]["daily"]["value"]
+        return 0
+
+    def daily_rain_unit(self):
+        if "rainfall" in self.data and "daily" in self.data["rainfall"]:
+            return self.data["rainfall"]["daily"]["unit"]
+        return "mm"
+
+    def rain_rate_value(self):
+        if "rainfall" in self.data and "rain_rate" in self.data["rainfall"]:
+            return self.data["rainfall"]["rain_rate"]["value"]
+        return 0
+
+    def rain_rate_unit(self):
+        if "rainfall" in self.data and "rain_rate" in self.data["rainfall"]:
+            return self.data["rainfall"]["rain_rate"]["unit"]
+        return "mm/hr"
+
 class Ecowitt:
     history_data = None
 

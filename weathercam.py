@@ -24,17 +24,18 @@ ecowitt_api = ecowitt.api.Ecowitt(
     mac=ecowitt_mac,
     temp_unitid=ecowitt_temp_unitid,
     wind_speed_unitid=ecowitt_wind_speed_unitid,
-    call_back="outdoor,wind,pressure,solar_and_uvi"
+    call_back="outdoor,wind,pressure,solar_and_uvi,rainfall"
     )
 
 # Get real-time data
 ecowitt_realtime = ecowitt_api.get_real_time_data()
 
-# Get historical temperature and humidity data
+# Get historical temperature, humidity, and rain data
 try:
     history_data = ecowitt_api.get_device_history()
     temperature_history = []
     humidity_history = []
+    rain_history = []
 
     if (history_data and
         isinstance(history_data, dict) and
@@ -70,10 +71,31 @@ try:
         temperature_history.sort(key=lambda x: x['time'])
         humidity_history.sort(key=lambda x: x['time'])
 
+    # Process rainfall data
+    if (history_data and
+        isinstance(history_data, dict) and
+        'rainfall' in history_data):
+
+        if ('daily' in history_data['rainfall'] and
+            'list' in history_data['rainfall']['daily']):
+            rain_list = history_data['rainfall']['daily']['list']
+            for timestamp, rain_value in rain_list.items():
+                # Convert Unix timestamp to ISO format for JavaScript
+                from datetime import datetime
+                dt = datetime.fromtimestamp(int(timestamp))
+                rain_history.append({
+                    'time': dt.isoformat(),
+                    'rainfall': float(rain_value)
+                })
+
+        # Sort by timestamp
+        rain_history.sort(key=lambda x: x['time'])
+
 except Exception as e:
     print(f"Error getting history data: {e}")
     temperature_history = []
     humidity_history = []
+    rain_history = []
 
 jinja2  = Environment(
     loader=FileSystemLoader("templates"),
@@ -96,8 +118,13 @@ for filename in ["weathercam.html"]:
         uvi_value=ecowitt_realtime.uvi_value(),
         solar_value=ecowitt_realtime.solar_value(),
         solar_unit=ecowitt_realtime.solar_unit(),
+        daily_rain_value=ecowitt_realtime.daily_rain_value(),
+        daily_rain_unit=ecowitt_realtime.daily_rain_unit(),
+        rain_rate_value=ecowitt_realtime.rain_rate_value(),
+        rain_rate_unit=ecowitt_realtime.rain_rate_unit(),
         google_analytics_id=google_analytics_id,
         posthog_id=posthog_id,
         temperature_history_json=json.dumps(temperature_history),
         humidity_history_json=json.dumps(humidity_history),
+        rain_history_json=json.dumps(rain_history),
     ).dump("output/" + filename)

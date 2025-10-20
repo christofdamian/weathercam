@@ -36,7 +36,13 @@
 
                 <div class="camera-section">
                     <div class="camera-frame">
-                        <img src="snap.jpg" alt="Weather Camera View">
+                        <a href="snap.jpg" target="_blank" title="Click to view full resolution image">
+                            <img src="snap_thumb.jpg" alt="Weather Camera View">
+                            <div class="image-overlay">
+                                <i class="fas fa-search-plus"></i>
+                                <span>View Full Resolution</span>
+                            </div>
+                        </a>
                     </div>
                 </div>
 
@@ -86,11 +92,25 @@
                         </div>
                     </div>
                     <div class="row g-2 mt-2">
-                        <div class="col-md-4 offset-md-4">
+                        <div class="col-lg-3 col-md-4">
                             <div class="stat-card">
                                 <i class="fas fa-solar-panel stat-icon solar-icon"></i>
                                 <div class="stat-value">{{ solar_value }} {{ solar_unit }}</div>
                                 <p class="stat-label">Solar Radiation</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                            <div class="stat-card">
+                                <i class="fas fa-cloud-rain stat-icon rain-icon"></i>
+                                <div class="stat-value">{{ daily_rain_value }} {{ daily_rain_unit }}</div>
+                                <p class="stat-label">Daily Rain</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4">
+                            <div class="stat-card">
+                                <i class="fas fa-tint stat-icon rain-rate-icon"></i>
+                                <div class="stat-value">{{ rain_rate_value }} {{ rain_rate_unit }}</div>
+                                <p class="stat-label">Rain Rate</p>
                             </div>
                         </div>
                     </div>
@@ -104,6 +124,18 @@
                         </h3>
                         <div style="height: 400px;">
                             <canvas id="weatherChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-section" style="padding: 2rem; background: rgba(255,255,255,0.8);">
+                    <div class="chart-container" style="background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                        <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1.5rem; font-weight: 300;">
+                            <i class="fas fa-cloud-rain" style="color: #3498db; margin-right: 0.5rem;"></i>
+                            Rainfall History (Last 7 Days)
+                        </h3>
+                        <div style="height: 400px;">
+                            <canvas id="rainChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -244,6 +276,92 @@
                 });
             } else {
                 document.querySelector('.chart-container').innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 2rem;">No weather history data available</p>';
+            }
+
+            // Rain Chart
+            const rainData = {{ rain_history_json | safe }};
+
+            if (rainData && rainData.length > 0) {
+                const rainCtx = document.getElementById('rainChart').getContext('2d');
+
+                const rainLabels = rainData.map(entry => {
+                    const date = new Date(entry.time);
+                    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                });
+
+                const rainfall = rainData.map(entry => entry.rainfall);
+
+                new Chart(rainCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: rainLabels,
+                        datasets: [{
+                            label: 'Rainfall (mm)',
+                            data: rainfall,
+                            backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                            borderColor: '#3498db',
+                            borderWidth: 1,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    color: '#7f8c8d',
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Rainfall: ' + context.parsed.y + ' mm';
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    maxTicksLimit: 12,
+                                    color: '#7f8c8d'
+                                }
+                            },
+                            y: {
+                                display: true,
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(127, 140, 141, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#3498db',
+                                    callback: function(value) {
+                                        return value + ' mm';
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Rainfall (mm)',
+                                    color: '#3498db'
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                const rainChartContainer = document.getElementById('rainChart').closest('.chart-container');
+                if (rainChartContainer) {
+                    rainChartContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 2rem;">No rainfall history data available</p>';
+                }
             }
         });
         </script>

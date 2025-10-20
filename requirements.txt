@@ -2,3 +2,4 @@ python-dotenv
 jinja2
 requests
 reolink-aio
+Pillow
