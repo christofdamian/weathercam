@@ -120,7 +120,7 @@
                     <div class="chart-container" style="background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
                         <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1.5rem; font-weight: 300;">
                             <i class="fas fa-chart-line" style="color: #ff6b6b; margin-right: 0.5rem;"></i>
-                            Temperature & Humidity History (Last 7 Days)
+                            Temperature History (Last 5 Days)
                         </h3>
                         <div style="height: 400px;">
                             <canvas id="weatherChart"></canvas>
@@ -132,7 +132,7 @@
                     <div class="chart-container" style="background: white; border-radius: 10px; padding: 1.5rem; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
                         <h3 style="text-align: center; color: #2c3e50; margin-bottom: 1.5rem; font-weight: 300;">
                             <i class="fas fa-cloud-rain" style="color: #3498db; margin-right: 0.5rem;"></i>
-                            Rainfall History (Last 7 Days)
+                            Rain Rate History (Last 5 Days)
                         </h3>
                         <div style="height: 400px;">
                             <canvas id="rainChart"></canvas>
@@ -147,7 +147,6 @@
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             const temperatureData = {{ temperature_history_json | safe }};
-            const humidityData = {{ humidity_history_json | safe }};
 
             if (temperatureData && temperatureData.length > 0) {
                 const ctx = document.getElementById('weatherChart').getContext('2d');
@@ -158,8 +157,6 @@
                 });
 
                 const temperatures = temperatureData.map(entry => entry.temperature);
-                const humidities = humidityData && humidityData.length > 0 ?
-                    humidityData.map(entry => entry.humidity) : [];
 
                 const datasets = [{
                     label: 'Temperature (°C)',
@@ -175,23 +172,6 @@
                     pointBorderWidth: 2,
                     yAxisID: 'y'
                 }];
-
-                if (humidities.length > 0) {
-                    datasets.push({
-                        label: 'Humidity (%)',
-                        data: humidities,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderWidth: 2,
-                        fill: false,
-                        tension: 0.4,
-                        pointRadius: 3,
-                        pointBackgroundColor: '#3498db',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        yAxisID: 'y1'
-                    });
-                }
 
                 new Chart(ctx, {
                     type: 'line',
@@ -242,25 +222,6 @@
                                     text: 'Temperature (°C)',
                                     color: '#ff6b6b'
                                 }
-                            },
-                            y1: {
-                                type: 'linear',
-                                display: humidities.length > 0,
-                                position: 'right',
-                                grid: {
-                                    drawOnChartArea: false,
-                                },
-                                ticks: {
-                                    color: '#3498db',
-                                    callback: function(value) {
-                                        return value + '%';
-                                    }
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Humidity (%)',
-                                    color: '#3498db'
-                                }
                             }
                         },
                         elements: {
@@ -289,19 +250,24 @@
                     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 });
 
-                const rainfall = rainData.map(entry => entry.rainfall);
+                const rainRate = rainData.map(entry => entry.rain_rate);
 
                 new Chart(rainCtx, {
-                    type: 'bar',
+                    type: 'line',
                     data: {
                         labels: rainLabels,
                         datasets: [{
-                            label: 'Rainfall (mm)',
-                            data: rainfall,
-                            backgroundColor: 'rgba(52, 152, 219, 0.6)',
+                            label: 'Rain Rate (mm/hr)',
+                            data: rainRate,
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
                             borderColor: '#3498db',
-                            borderWidth: 1,
-                            borderRadius: 5
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 3,
+                            pointBackgroundColor: '#3498db',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2
                         }]
                     },
                     options: {
@@ -320,7 +286,7 @@
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
-                                        return 'Rainfall: ' + context.parsed.y + ' mm';
+                                        return 'Rain Rate: ' + context.parsed.y + ' mm/hr';
                                     }
                                 }
                             }
@@ -345,22 +311,31 @@
                                 ticks: {
                                     color: '#3498db',
                                     callback: function(value) {
-                                        return value + ' mm';
+                                        return value + ' mm/hr';
                                     }
                                 },
                                 title: {
                                     display: true,
-                                    text: 'Rainfall (mm)',
+                                    text: 'Rain Rate (mm/hr)',
                                     color: '#3498db'
                                 }
                             }
+                        },
+                        elements: {
+                            point: {
+                                hoverRadius: 6
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
                         }
                     }
                 });
             } else {
                 const rainChartContainer = document.getElementById('rainChart').closest('.chart-container');
                 if (rainChartContainer) {
-                    rainChartContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 2rem;">No rainfall history data available</p>';
+                    rainChartContainer.innerHTML = '<p style="text-align: center; color: #7f8c8d; padding: 2rem;">No rain rate history data available</p>';
                 }
             }
         });

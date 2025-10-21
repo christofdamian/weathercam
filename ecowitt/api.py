@@ -116,7 +116,7 @@ class Ecowitt:
             Dictionary containing historical weather data
         """
         if start_date is None:
-            start_date = (datetime.now().replace(microsecond=0) - timedelta(days=7)).isoformat(' ')
+            start_date = (datetime.now().replace(microsecond=0) - timedelta(days=5)).isoformat(' ')
         if end_date is None:
             end_date = datetime.now().replace(microsecond=0).isoformat(' ')
 

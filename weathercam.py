@@ -34,7 +34,6 @@ ecowitt_realtime = ecowitt_api.get_real_time_data()
 try:
     history_data = ecowitt_api.get_device_history()
     temperature_history = []
-    humidity_history = []
     rain_history = []
 
     if (history_data and
@@ -49,44 +48,34 @@ try:
                 # Convert Unix timestamp to ISO format for JavaScript
                 from datetime import datetime
                 dt = datetime.fromtimestamp(int(timestamp))
-                temperature_history.append({
-                    'time': dt.isoformat(),
-                    'temperature': float(temp_value)
-                })
-
-        # Process humidity data
-        if ('humidity' in history_data['outdoor'] and
-            'list' in history_data['outdoor']['humidity']):
-            humidity_list = history_data['outdoor']['humidity']['list']
-            for timestamp, humidity_value in humidity_list.items():
-                # Convert Unix timestamp to ISO format for JavaScript
-                from datetime import datetime
-                dt = datetime.fromtimestamp(int(timestamp))
-                humidity_history.append({
-                    'time': dt.isoformat(),
-                    'humidity': float(humidity_value)
-                })
+                # Only include data points on the full hour
+                if dt.minute == 0:
+                    temperature_history.append({
+                        'time': dt.isoformat(),
+                        'temperature': float(temp_value)
+                    })
 
         # Sort by timestamp
         temperature_history.sort(key=lambda x: x['time'])
-        humidity_history.sort(key=lambda x: x['time'])
 
-    # Process rainfall data
+    # Process rain rate data
     if (history_data and
         isinstance(history_data, dict) and
         'rainfall' in history_data):
 
-        if ('daily' in history_data['rainfall'] and
-            'list' in history_data['rainfall']['daily']):
-            rain_list = history_data['rainfall']['daily']['list']
+        if ('rain_rate' in history_data['rainfall'] and
+            'list' in history_data['rainfall']['rain_rate']):
+            rain_list = history_data['rainfall']['rain_rate']['list']
             for timestamp, rain_value in rain_list.items():
                 # Convert Unix timestamp to ISO format for JavaScript
                 from datetime import datetime
                 dt = datetime.fromtimestamp(int(timestamp))
-                rain_history.append({
-                    'time': dt.isoformat(),
-                    'rainfall': float(rain_value)
-                })
+                # Only include data points on the full hour
+                if dt.minute == 0:
+                    rain_history.append({
+                        'time': dt.isoformat(),
+                        'rain_rate': float(rain_value)
+                    })
 
         # Sort by timestamp
         rain_history.sort(key=lambda x: x['time'])
@@ -94,7 +83,6 @@ try:
 except Exception as e:
     print(f"Error getting history data: {e}")
     temperature_history = []
-    humidity_history = []
     rain_history = []
 
 jinja2  = Environment(
@@ -125,6 +113,5 @@ for filename in ["weathercam.html"]:
         google_analytics_id=google_analytics_id,
         posthog_id=posthog_id,
         temperature_history_json=json.dumps(temperature_history),
-        humidity_history_json=json.dumps(humidity_history),
         rain_history_json=json.dumps(rain_history),
     ).dump("output/" + filename)
