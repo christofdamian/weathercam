@@ -72,12 +72,14 @@ class EcowittRealTimeData:
 class Ecowitt:
     history_data = None
 
-    def __init__(self, application_key=None, api_key=None, mac=None, temp_unitid=2, wind_speed_unitid=7, call_back="all"):
+    def __init__(self, application_key=None, api_key=None, mac=None, temp_unitid=2, wind_speed_unitid=7, pressure_unitid=3, rainfall_unitid=12, call_back="all"):
         self.application_key = application_key
         self.api_key = api_key
         self.mac = mac
         self.temp_unitid = temp_unitid
         self.wind_speed_unitid = wind_speed_unitid
+        self.pressure_unitid = pressure_unitid
+        self.rainfall_unitid = rainfall_unitid
         self.call_back = call_back
 
     def get_real_time_data(self):
@@ -94,6 +96,8 @@ class Ecowitt:
             "mac": self.mac,
             "temp_unitid": self.temp_unitid,
             "wind_speed_unitid": self.wind_speed_unitid,
+            "pressure_unitid": self.pressure_unitid,
+            "rainfall_unitid": self.rainfall_unitid,
             "call_back": self.call_back,
         })
         
@@ -131,6 +135,8 @@ class Ecowitt:
             "cycle_type": cycle_type,
             "temp_unitid": self.temp_unitid,
             "wind_speed_unitid": self.wind_speed_unitid,
+            "pressure_unitid": self.pressure_unitid,
+            "rainfall_unitid": self.rainfall_unitid,
             "call_back": self.call_back,
         })
 

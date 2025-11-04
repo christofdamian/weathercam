@@ -12,8 +12,11 @@ load_dotenv()
 ecowitt_application_key = os.environ.get("ECOWITT_APPLICATION_KEY")
 ecowitt_api_key = os.environ.get("ECOWITT_API_KEY")
 ecowitt_mac = os.environ.get("ECOWITT_MAC")
-ecowitt_temp_unitid = int(os.environ.get("ECOWITT_TEMP_UNITID"))
-ecowitt_wind_speed_unitid = int(os.environ.get("ECOWITT_WIND_SPEED_UNITID"))
+# Default to metric units: 1=Celsius, 7=km/h, 3=hPa, 12=mm
+ecowitt_temp_unitid = int(os.environ.get("ECOWITT_TEMP_UNITID", "1"))
+ecowitt_wind_speed_unitid = int(os.environ.get("ECOWITT_WIND_SPEED_UNITID", "7"))
+ecowitt_pressure_unitid = int(os.environ.get("ECOWITT_PRESSURE_UNITID", "3"))
+ecowitt_rainfall_unitid = int(os.environ.get("ECOWITT_RAINFALL_UNITID", "12"))
 
 google_analytics_id = os.environ.get("GOOGLE_ANALYTICS_ID")
 posthog_id = os.environ.get("POSTHOG_ID")
@@ -24,6 +27,8 @@ ecowitt_api = ecowitt.api.Ecowitt(
     mac=ecowitt_mac,
     temp_unitid=ecowitt_temp_unitid,
     wind_speed_unitid=ecowitt_wind_speed_unitid,
+    pressure_unitid=ecowitt_pressure_unitid,
+    rainfall_unitid=ecowitt_rainfall_unitid,
     call_back="outdoor,wind,pressure,solar_and_uvi,rainfall"
     )
 
