@@ -3,3 +3,4 @@ jinja2
 requests
 reolink-aio
 Pillow
+urllib3 ~> 2.6.0
