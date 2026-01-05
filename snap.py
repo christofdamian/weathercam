@@ -14,11 +14,13 @@ HUB_IP = os.environ.get("REOLINK_HUB_IP")
 HUB_USER = os.environ.get("REOLINK_HUB_USER")
 HUB_PASSWORD = os.environ.get("REOLINK_HUB_PASSWORD")
 HUB_CAMERA_ID = int(os.environ.get("REOLINK_HUB_CAMERA_ID"))
+HUB_TIMEOUT = int(os.environ.get("REOLINK_HUB_TIMEOUT", "30"))
+SNAPSHOT_TIMEOUT = int(os.environ.get("REOLINK_SNAPSHOT_TIMEOUT", "30"))
 
 logger = logging.getLogger(__name__)
 
 async def snap():
-    host = Host(HUB_IP, HUB_USER, HUB_PASSWORD, timeout=10)
+    host = Host(HUB_IP, HUB_USER, HUB_PASSWORD, timeout=HUB_TIMEOUT)
     temp_file = "output/snap.jpg.tmp"
     final_file = "output/snap.jpg"
     thumbnail_file = "output/snap_thumb.jpg"
@@ -26,13 +28,13 @@ async def snap():
 
     try:
         logger.info(f"Connecting to camera hub at {HUB_IP}...")
-        await asyncio.wait_for(host.get_host_data(), timeout=15)
+        await asyncio.wait_for(host.get_host_data(), timeout=HUB_TIMEOUT)
         logger.info("Successfully connected to hub")
 
         # Write to temporary file first
         logger.info(f"Requesting snapshot from camera {HUB_CAMERA_ID}...")
         with open(temp_file, "wb") as image:
-            snapshot = await asyncio.wait_for(host.get_snapshot(HUB_CAMERA_ID), timeout=10)
+            snapshot = await asyncio.wait_for(host.get_snapshot(HUB_CAMERA_ID), timeout=SNAPSHOT_TIMEOUT)
             image.write(snapshot)
         logger.info(f"Snapshot data received ({os.path.getsize(temp_file)} bytes)")
 
