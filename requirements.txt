@@ -5,4 +5,3 @@ urllib3>=2.6.0
 Brotli>=1.2.0
 reolink-aio
 Pillow
-urllib3 ~> 2.6.0
