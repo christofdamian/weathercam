@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "weathercam"
+version = "0.1.0"
+description = "Weather camera snapshot tool"
+authors = ["Christof Damian <christof@damian.net>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+python-dotenv = "*"
+jinja2 = "*"
+requests = "*"
+urllib3 = ">=2.6.0"
+Brotli = ">=1.2.0"
+reolink-aio = "*"
+Pillow = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
