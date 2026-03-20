@@ -9,6 +9,10 @@ __pycache__/
 *.so
 .Python
 
+# Include Claude settings (overrides global gitignore)
+!.claude/
+!.claude/settings.json
+
 # Virtual environments
 .venv/
 venv/

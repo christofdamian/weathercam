@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | grep -q '/\\.env$' && echo '{\"decision\":\"block\",\"reason\":\"Reading .env files is not allowed to protect secrets.\"}' || true"
+          }
+        ]
+      },
+      {
+        "matcher": "Grep",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.path // empty' | grep -q '/\\.env$' && echo '{\"decision\":\"block\",\"reason\":\"Grepping .env files is not allowed to protect secrets.\"}' || true"
+          }
+        ]
+      }
+    ]
+  }
+}
